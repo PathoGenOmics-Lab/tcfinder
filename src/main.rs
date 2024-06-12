@@ -67,3 +67,20 @@ fn main() -> io::Result<()> {
     todo!();
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn read_tree() {
+        let file = File::open("test/rtree.csv").expect("Cannot open tree file");
+        let tree = read_phylo4(file).expect("Cannot parse tree");
+        let n_tips = tree
+            .node_indices()
+            .map(|node| tree.node_weight(node))
+            .filter(|w| w.unwrap().is_tip)
+            .count();
+        assert_eq!(n_tips, 100);
+    }
+}
