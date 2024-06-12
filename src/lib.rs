@@ -1,8 +1,8 @@
 use std::{error::Error, fs::File};
 
 use clap::Parser;
-use simplelog::*;
 use log::*;
+use simplelog::*;
 
 mod clusters;
 mod io;

@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
-use petgraph::prelude::*;
 use log::*;
+use petgraph::prelude::*;
 
 /// Node features
 pub struct NodeW {
@@ -72,7 +72,10 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
     // Select root
     debug!("Searching root");
     let root = find_root(&tree).unwrap();
-    debug!("Found root: node={:?}", tree.node_weight(root).unwrap().index);
+    debug!(
+        "Found root: node={:?}",
+        tree.node_weight(root).unwrap().index
+    );
     // Check first node
     debug!("Calculating root stats");
     let stats = calculate_clade_stats(tree, &root);
@@ -86,12 +89,18 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
         return results;
     } else {
         // Enqueue to start subsequent search
-        debug!("Enqueueing root to start search (prop={}, size={})", stats.prop, stats.size);
+        debug!(
+            "Enqueueing root to start search (prop={}, size={})",
+            stats.prop, stats.size
+        );
         queue.push_back(root);
     }
     // Check the rest of nodes
     while let Some(node) = queue.pop_front() {
-        debug!("Calculating stats for node={:?} children", tree.node_weight(node).unwrap().index);
+        debug!(
+            "Calculating stats for node={:?} children",
+            tree.node_weight(node).unwrap().index
+        );
         // Calculate child stats
         let children_stats: Vec<_> = tree
             // Get immediate descendants of node
@@ -105,14 +114,25 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
         for (child_node, stats) in children_stats {
             if stats.prop >= threshold.prop && stats.size >= threshold.size {
                 // Child qualifies
-                debug!("Child node={:?} qualifies", tree.node_weight(child_node).unwrap().index);
+                debug!(
+                    "Child node={:?} qualifies",
+                    tree.node_weight(child_node).unwrap().index
+                );
                 results.push(child_node);
             } else if stats.prop * (stats.size as f64) < (threshold.size as f64) {
                 // Not enough target nodes in subclade to qualify
-                debug!("Skipping search from node={:?} - no clusters anywhere in its subclade", tree.node_weight(child_node).unwrap().index);
+                debug!(
+                    "Skipping search from node={:?} - no clusters anywhere in its subclade",
+                    tree.node_weight(child_node).unwrap().index
+                );
             } else {
                 // Some subclade would still be selected
-                debug!("Enqueueing node={:?} (prop={}, size={})", tree.node_weight(child_node).unwrap().index, stats.prop, stats.size);
+                debug!(
+                    "Enqueueing node={:?} (prop={}, size={})",
+                    tree.node_weight(child_node).unwrap().index,
+                    stats.prop,
+                    stats.size
+                );
                 queue.push_back(child_node);
             }
         }
