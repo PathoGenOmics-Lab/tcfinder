@@ -76,7 +76,7 @@ mod tests {
 
     #[test]
     fn read_tree() {
-        let tree = read_test_tree();
+        let _tree = read_test_tree();
     }
 
     #[test]
@@ -98,7 +98,7 @@ mod tests {
 
     #[test]
     fn count_target_tips() {
-        let mut tree = read_test_tree();
+        let tree = read_test_tree();
         let targets = read_test_targets();
         let tree = clusters::annotate_targets(tree, &targets);
         let n_targets = tree
