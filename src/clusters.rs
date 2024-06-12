@@ -1,6 +1,7 @@
 use petgraph::prelude::*;
 use std::collections::VecDeque;
 
+/// Node features
 pub struct NodeW {
     pub index: usize,
     pub label: String,
@@ -8,6 +9,7 @@ pub struct NodeW {
     pub is_target: bool,
 }
 
+/// Clade stats regarding target tips/leaves
 pub struct CladeTargetStats {
     /// Proportion of targets in clade
     pub prop: f64,
@@ -24,6 +26,7 @@ pub fn annotate_targets(mut tree: DiGraph<NodeW, ()>, targets: &Vec<String>) -> 
     tree
 }
 
+/// Find the root of the tree (the one node with no incoming edges)
 pub fn find_root(tree: &DiGraph<NodeW, ()>) -> Option<NodeIndex> {
     tree.node_indices().find(|&node| {
         tree.edges_directed(node, Direction::Incoming)
@@ -32,6 +35,7 @@ pub fn find_root(tree: &DiGraph<NodeW, ()>) -> Option<NodeIndex> {
     })
 }
 
+/// Search the tips/leaves from the given node
 fn get_descendant_leaves(graph: &DiGraph<NodeW, ()>, node: &NodeIndex) -> Vec<NodeIndex> {
     let mut leaves = Vec::new();
     let mut dfs = Dfs::new(graph, *node);
@@ -43,6 +47,7 @@ fn get_descendant_leaves(graph: &DiGraph<NodeW, ()>, node: &NodeIndex) -> Vec<No
     leaves
 }
 
+/// Calculate the clade stats regarding target tips/leaves from the given node
 fn calculate_clade_stats(tree: &DiGraph<NodeW, ()>, node: &NodeIndex) -> CladeTargetStats {
     let tips = get_descendant_leaves(tree, node);
     let n_tips = tips.len();
