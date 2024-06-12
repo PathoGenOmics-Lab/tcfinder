@@ -58,14 +58,12 @@ fn calculate_clade_stats(tree: &DiGraph<NodeW, ()>, node: &NodeIndex) -> CladeTa
 
 /// Find transmission clusters
 pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<NodeIndex> {
-    println!("TCFIND: Starting");
     // Init results and queue
     let mut results: Vec<NodeIndex> = Vec::new();
     let mut queue: VecDeque<NodeIndex> = VecDeque::new();
     // Select root
     let root = find_root(&tree).unwrap();
     // Check first node
-    println!("TCFIND: Checking root {:?}", root);
     let stats = calculate_clade_stats(tree, &root);
     if (stats.prop >= threshold.prop) && (stats.size >= threshold.size) {
         // The root is enough
@@ -79,7 +77,6 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
     }
     // Check the rest of nodes
     while let Some(node) = queue.pop_front() {
-        println!("TCFIND: processing {:?}", node);
         // Calculate child stats
         let children_stats: Vec<_> = tree
             // Get immediate descendants of node
