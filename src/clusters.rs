@@ -1,5 +1,5 @@
-use std::collections::VecDeque;
 use petgraph::prelude::*;
+use std::collections::VecDeque;
 
 pub struct NodeW {
     pub index: usize,

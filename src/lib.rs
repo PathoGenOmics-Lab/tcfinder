@@ -19,9 +19,9 @@ struct Args {
     #[arg(short = 't', long, required = true)]
     targets: String,
 
-    /// Output directory
+    /// Output CSV file with clustering result
     #[arg(short = 'o', long, required = true)]
-    clusters: String,
+    output: String,
 
     /// Minimum cluster size
     #[arg(short = 's', long, default_value_t = 2)]
@@ -47,19 +47,19 @@ pub fn run() -> Result<(), Box<dyn Error>> {
     let tree_file = File::open(args.tree)?;
     let tree = io::read_phylo4(tree_file)?;
     let tree = clusters::annotate_targets(tree, &targets);
+    // Find clusters
     let clusters = clusters::tcfind(&tree, threshold);
     let labels = clusters::extract_clade_tip_labels(&tree, &clusters);
-    Ok(())
+    // Write results
+    io::write_cluster_table(&labels, args.output)
 }
-
-
 
 #[cfg(test)]
 mod tests {
 
     use super::*;
-    use std::io::{BufRead, BufReader};
     use petgraph::prelude::*;
+    use std::io::{BufRead, BufReader};
 
     fn read_test_tree() -> DiGraph<clusters::NodeW, ()> {
         let file = File::open("test/rtree.csv").expect("Could not open tree file");
