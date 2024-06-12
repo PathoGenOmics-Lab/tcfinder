@@ -1,5 +1,7 @@
-use petgraph::prelude::*;
 use std::collections::VecDeque;
+
+use petgraph::prelude::*;
+use log::*;
 
 /// Node features
 pub struct NodeW {
@@ -64,24 +66,32 @@ fn calculate_clade_stats(tree: &DiGraph<NodeW, ()>, node: &NodeIndex) -> CladeTa
 /// Find transmission clusters
 pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<NodeIndex> {
     // Init results and queue
+    debug!("Initializing");
     let mut results: Vec<NodeIndex> = Vec::new();
     let mut queue: VecDeque<NodeIndex> = VecDeque::new();
     // Select root
+    debug!("Searching root");
     let root = find_root(&tree).unwrap();
+    debug!("Found root: node={:?}", tree.node_weight(root).unwrap().index);
     // Check first node
+    debug!("Calculating root stats");
     let stats = calculate_clade_stats(tree, &root);
     if (stats.prop >= threshold.prop) && (stats.size >= threshold.size) {
         // The root is enough
+        debug!("Root node qualifies");
         results.push(root);
     } else if stats.prop * (stats.size as f64) < (threshold.size as f64) {
         // There are no clusters
+        debug!("Skipping search - no clusters in this tree");
         return results;
     } else {
         // Enqueue to start subsequent search
+        debug!("Enqueueing root to start search (prop={}, size={})", stats.prop, stats.size);
         queue.push_back(root);
     }
     // Check the rest of nodes
     while let Some(node) = queue.pop_front() {
+        debug!("Calculating stats for node={:?} children", tree.node_weight(node).unwrap().index);
         // Calculate child stats
         let children_stats: Vec<_> = tree
             // Get immediate descendants of node
@@ -95,11 +105,14 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
         for (child_node, stats) in children_stats {
             if stats.prop >= threshold.prop && stats.size >= threshold.size {
                 // Child qualifies
+                debug!("Child node={:?} qualifies", tree.node_weight(child_node).unwrap().index);
                 results.push(child_node);
             } else if stats.prop * (stats.size as f64) < (threshold.size as f64) {
                 // Not enough target nodes in subclade to qualify
+                debug!("Skipping search from node={:?} - no clusters anywhere in its subclade", tree.node_weight(child_node).unwrap().index);
             } else {
                 // Some subclade would still be selected
+                debug!("Enqueueing node={:?} (prop={}, size={})", tree.node_weight(child_node).unwrap().index, stats.prop, stats.size);
                 queue.push_back(child_node);
             }
         }
@@ -112,6 +125,7 @@ pub fn extract_clade_tip_labels(
     tree: &DiGraph<NodeW, ()>,
     nodes: &Vec<NodeIndex>,
 ) -> Vec<Vec<String>> {
+    debug!("Extracting labels from subclades");
     let mut labels: Vec<Vec<String>> = nodes
         .iter()
         .map(|node| {
@@ -123,6 +137,7 @@ pub fn extract_clade_tip_labels(
             cluster_labels
         })
         .collect();
+    debug!("Sorting cluster label lists");
     labels.sort();
     labels
 }

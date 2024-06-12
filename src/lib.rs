@@ -1,5 +1,8 @@
-use clap::Parser;
 use std::{error::Error, fs::File};
+
+use clap::Parser;
+use simplelog::*;
+use log::*;
 
 mod clusters;
 mod io;
@@ -30,27 +33,42 @@ struct Args {
     /// Minimum proportion of targets in cluster
     #[arg(short = 'p', long, default_value_t = 0.9)]
     minimum_prop: f64,
+
+    /// Prints debug messages
+    #[arg(short = 'v', long, default_value_t = false)]
+    verbose: bool,
 }
 
 pub fn run() -> Result<(), Box<dyn Error>> {
     // Arguments
     let args = Args::parse();
+    // Set log level
+    if args.verbose {
+        let _ = SimpleLogger::init(LevelFilter::Debug, Config::default());
+    } else {
+        let _ = SimpleLogger::init(LevelFilter::Info, Config::default());
+    }
     // Init threshold
     let threshold = clusters::CladeTargetStats {
         prop: args.minimum_prop,
         size: args.minimum_size,
     };
     // Read targets
+    info!("Reading input targets");
     let targets_file = File::open(args.targets)?;
     let targets: Vec<String> = io::read_targets(targets_file);
     // Read tree
+    info!("Reading input tree");
     let tree_file = File::open(args.tree)?;
     let tree = io::read_phylo4(tree_file)?;
     let tree = clusters::annotate_targets(tree, &targets);
     // Find clusters
+    info!("Calculating clusters");
     let clusters = clusters::tcfind(&tree, threshold);
+    info!("Extracting tip labels");
     let labels = clusters::extract_clade_tip_labels(&tree, &clusters);
     // Write results
+    info!("Writing results");
     io::write_cluster_table(&labels, args.output)
 }
 
