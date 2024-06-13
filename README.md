@@ -3,6 +3,8 @@
 [![PGO badge](https://img.shields.io/badge/PathoGenOmics-Lab-yellow.svg)](https://pathogenomics.github.io/)
 [![Conda badge](https://img.shields.io/conda/d/tcfinder/nextclade)](https://anaconda.org/bioconda/tcfinder)
 [![Release](https://img.shields.io/github/release/PathoGenOmics-Lab/tcfinder.svg)](https://github.com/PathoGenOmics-Lab/tcfinder/releases)
+![Build](https://github.com/PathoGenOmics-Lab/tcfinder/actions/workflows/build.yml/badge.svg)
+![Test](https://github.com/PathoGenOmics-Lab/tcfinder/actions/workflows/test.yml/badge.svg)
 
 A lightweight tool to find clusters of samples from a list of identifiers within a phylogeny in phylo4 format
 (see [`phylobase`](https://cran.r-project.org/web/packages/phylobase/vignettes/phylobase.html)),
