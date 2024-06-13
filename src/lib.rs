@@ -8,17 +8,17 @@ mod clusters;
 mod io;
 
 /// tcfinder (transmission cluster finder)
-/// finds transmission clusters in a phylo4 phylogeny
+/// finds clusters of samples from a list of identifiers within a phylo4 phylogeny
 /// (see https://cran.r-project.org/web/packages/phylobase/vignettes/phylobase.html)
 #[derive(Parser, Debug)]
 #[command(author = "Miguel Álvarez Herrera <miguel.alvarez@uv.es>")]
 #[command(version)]
 struct Args {
-    /// input tree in phylo4 format (mandatory CSV columns are 'label', 'node', 'ancestor' and 'nodetype')
+    // Input tree in phylo4 format (mandatory CSV columns are 'label', 'node', 'ancestor' and 'nodetype')
     #[arg(short = 'i', long, required = true)]
     tree: String,
 
-    /// input list of target labels plain text (one tip label per line)
+    // Input list of target labels plain text (one tip label per line)
     #[arg(short = 't', long, required = true)]
     targets: String,
 
@@ -26,7 +26,7 @@ struct Args {
     #[arg(short = 'o', long, required = true)]
     output: String,
 
-    /// Minimum cluster size
+    /// Minimum number of tips (cluster size)
     #[arg(short = 's', long, default_value_t = 2)]
     minimum_size: usize,
 
@@ -49,10 +49,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         let _ = SimpleLogger::init(LevelFilter::Info, Config::default());
     }
     // Init threshold
-    let threshold = clusters::CladeTargetStats {
-        prop: args.minimum_prop,
-        size: args.minimum_size,
-    };
+    let threshold = clusters::CladeTargetStats::threshold(args.minimum_prop, args.minimum_size);
     // Read targets
     info!("Reading input targets");
     let targets_file = File::open(args.targets)?;
@@ -139,7 +136,7 @@ mod tests {
         let tree = read_test_tree();
         let targets = read_test_targets();
         let tree = clusters::annotate_targets(tree, &targets);
-        let threshold = clusters::CladeTargetStats { prop: 0.9, size: 2 };
+        let threshold = clusters::CladeTargetStats::threshold(0.9, 2);
         let clusters = clusters::tcfind(&tree, threshold);
         let labels = clusters::extract_clade_tip_labels(&tree, &clusters);
         assert_eq!(

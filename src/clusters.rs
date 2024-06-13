@@ -12,11 +12,31 @@ pub struct NodeW {
 }
 
 /// Clade stats regarding target tips/leaves
+#[derive(Debug)]
 pub struct CladeTargetStats {
     /// Proportion of targets in clade
-    pub prop: f64,
+    prop: f64,
     /// Number of tips in clade
-    pub size: usize,
+    size: usize,
+    /// Number of targets in clade
+    targets: usize,
+}
+
+impl CladeTargetStats {
+    pub fn threshold(prop: f64, size: usize) -> Self {
+        Self {
+            prop,
+            size,
+            targets: f64::round(prop * size as f64) as usize,
+        }
+    }
+    pub fn new(size: usize, targets: usize) -> Self {
+        Self {
+            prop: targets as f64 / size as f64,
+            size,
+            targets,
+        }
+    }
 }
 
 /// Annotate targets in place
@@ -57,10 +77,7 @@ fn calculate_clade_stats(tree: &DiGraph<NodeW, ()>, node: &NodeIndex) -> CladeTa
         .iter()
         .filter(|&tip| tree.node_weight(*tip).unwrap().is_target)
         .count();
-    CladeTargetStats {
-        prop: n_targets as f64 / n_tips as f64,
-        size: n_tips,
-    }
+    CladeTargetStats::new(n_tips, n_targets)
 }
 
 /// Find transmission clusters
@@ -83,7 +100,7 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
         // The root is enough
         debug!("Root node qualifies");
         results.push(root);
-    } else if stats.prop * (stats.size as f64) < (threshold.size as f64) {
+    } else if stats.targets < threshold.targets {
         // There are no clusters
         debug!("Skipping search - no clusters in this tree");
         return results;
@@ -119,7 +136,7 @@ pub fn tcfind(tree: &DiGraph<NodeW, ()>, threshold: CladeTargetStats) -> Vec<Nod
                     tree.node_weight(child_node).unwrap().index
                 );
                 results.push(child_node);
-            } else if stats.prop * (stats.size as f64) < (threshold.size as f64) {
+            } else if stats.targets < threshold.targets {
                 // Not enough target nodes in subclade to qualify
                 debug!(
                     "Skipping search from node={:?} - no clusters anywhere in its subclade",
