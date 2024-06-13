@@ -12,12 +12,13 @@ regarding a minimum cluster size and a minimum proportion of targets in the clus
 
 This tool is available through the [`bioconda`](https://anaconda.org/bioconda/) conda channel.
 Check out the [package recipe](http://bioconda.github.io/recipes/tcfinder/README.html) for more information.
+Run the following command to install it in the current conda environment.
 
 ```shell
 conda install -c bioconda tcfinder
 ```
 
-Binary files can be retrieved through the releases page (e.g. see [latest release](https://github.com/PathoGenOmics-Lab/VIPERA/releases/latest)).
+Binary files can be retrieved through the releases page (e.g. see [latest release](https://github.com/PathoGenOmics-Lab/tcfinder/releases/latest)).
 As a Rust project, it can also be built and tested using [`cargo`](https://doc.rust-lang.org/cargo/commands/cargo-build.html).
 
 ## Usage
