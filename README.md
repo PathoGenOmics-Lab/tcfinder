@@ -1,8 +1,8 @@
 # tcfinder
 
 [![PGO badge](https://img.shields.io/badge/PathoGenOmics-Lab-yellow.svg)](https://pathogenomics.github.io/)
-[![Conda badge](https://img.shields.io/conda/d/tcfinder/nextclade)](https://anaconda.org/bioconda/tcfinder)
 [![Release](https://img.shields.io/github/release/PathoGenOmics-Lab/tcfinder.svg)](https://github.com/PathoGenOmics-Lab/tcfinder/releases)
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/tcfinder/badges/downloads.svg)](https://anaconda.org/bioconda/tcfinder)
 ![Build](https://github.com/PathoGenOmics-Lab/tcfinder/actions/workflows/build.yml/badge.svg)
 ![Test](https://github.com/PathoGenOmics-Lab/tcfinder/actions/workflows/test.yml/badge.svg)
 
@@ -20,8 +20,9 @@ Run the following command to install it in the current conda environment.
 conda install -c bioconda tcfinder
 ```
 
-Binary files can be retrieved through the releases page (e.g. see [latest release](https://github.com/PathoGenOmics-Lab/tcfinder/releases/latest)).
-As a Rust project, it can also be built and tested using [`cargo`](https://doc.rust-lang.org/cargo/commands/cargo-build.html).
+The most recent release can be retrieved through the [Releases](https://github.com/PathoGenOmics-Lab/tcfinder/releases)
+section (see [latest release](https://github.com/PathoGenOmics-Lab/tcfinder/releases/latest)).
+As a Rust project, it can be built and tested using [`cargo`](https://doc.rust-lang.org/cargo/commands/cargo.html).
 
 ## Usage
 
