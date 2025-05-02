@@ -97,8 +97,10 @@ qualifies under the default thresholds (✓), while the second does not (✗).
 
 ![cluster stats scheme](/scheme.png)
 
-<!-- ## Citation -->
+## Citation
 
-<!-- Manuscript under review. -->
+This tool was originally developed to support this work:
 
-<!-- TODO: https://allcontributors.org/ -->
+> Álvarez-Herrera M, Ruiz-Rodriguez P, Navarro-Domínguez B, Zulaica J, Grau B, Bracho MA, Guerreiro M, Aguilar-Gallardo C, González-Candelas F, Comas I, Geller R & Coscollá M (2025). Genome data artifacts and functional studies of deletion repair in the BA.1 SARS-CoV-2 spike protein. Virus Evolution, 11(1), veaf015. https://doi.org/10.1093/ve/veaf015
+
+If you find the tool helpful, please feel free to cite the above (see also [CITATION.cff](/CITATION.cff)).
